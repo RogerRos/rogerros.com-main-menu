@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>rogerros.com | PCB Interface</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f2e1d, #1a4a2f, #0c3920);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .pcb-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    path {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 2;
+      transition: stroke 0.3s, stroke-width 0.3s;
+    }
+
+    .highlighted {
+      stroke: url(#rgbGradient);
+      stroke-width: 3;
+      stroke-linecap: round;
+      animation: dash 2s linear forwards;
+    }
+
+    @keyframes dash {
+      from {
+        stroke-dashoffset: var(--path-length);
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .pcb-node {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #c9ffcb;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+      backdrop-filter: blur(6px);
+    }
+
+    .pcb-node:hover {
+      box-shadow: none;
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+  </style>
+</head>
+<body>
+  <div class="pcb-container">
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="rgbGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%">
+            <animate attributeName="stop-color" values="#00ffcc; #33ff57; #00ffcc" dur="3s" repeatCount="indefinite" />
+          </stop>
+          <stop offset="100%">
+            <animate attributeName="stop-color" values="#33ff57; #00ffcc; #33ff57" dur="3s" repeatCount="indefinite" />
+          </stop>
+        </linearGradient>
+      </defs>
+
+      <!-- PCB LINES -->
+      <path id="line-1" d="M 200 300 L 300 300 Q 320 300 320 320 L 320 400" />
+      <path id="line-2" d="M 320 400 L 500 400 Q 520 400 520 380 L 520 300" />
+      <path id="line-3" d="M 320 400 L 320 500 Q 320 520 340 520 L 500 520" />
+      <path id="line-4" d="M 320 400 L 320 600 Q 320 620 300 620 L 200 620" />
+    </svg>
+
+    <!-- PCB NODES -->
+    <div class="pcb-node" id="node-home" style="top: 270px; left: 170px;">Home</div>
+    <div class="pcb-node" id="node-hub" style="top: 370px; left: 290px;">Hub</div>
+    <div class="pcb-node" id="node-docs" style="top: 270px; left: 490px;">Docs</div>
+    <div class="pcb-node" id="node-tools" style="top: 490px; left: 490px;">Tools</div>
+    <div class="pcb-node" id="node-about" style="top: 590px; left: 170px;">About</div>
+  </div>
+
+  <script>
+    // Mapeo de conexiones entre nodos y líneas
+    const nodeConnections = {
+      'node-home': ['line-1'],
+      'node-hub': ['line-1', 'line-2', 'line-3', 'line-4'],
+      'node-docs': ['line-2'],
+      'node-tools': ['line-3'],
+      'node-about': ['line-4'],
+    };
+
+    document.querySelectorAll('.pcb-node').forEach(node => {
+      node.addEventListener('mouseenter', () => {
+        const ids = nodeConnections[node.id];
+        ids.forEach(id => {
+          const path = document.getElementById(id);
+          const length = path.getTotalLength();
+          path.style.strokeDasharray = length;
+          path.style.strokeDashoffset = length;
+          path.style.setProperty('--path-length', length);
+          path.classList.remove('highlighted');
+          void path.offsetWidth; // forzar reflow
+          path.classList.add('highlighted');
+        });
+      });
+
+      node.addEventListener('mouseleave', () => {
+        const ids = nodeConnections[node.id];
+        ids.forEach(id => {
+          const path = document.getElementById(id);
+          path.classList.remove('highlighted');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
