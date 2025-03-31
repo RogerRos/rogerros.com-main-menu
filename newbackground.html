@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Fondo Animado Masculino con Onda Infinita Suave</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow-x: hidden; background: #111; }
+
+    .wave-section {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      background: radial-gradient(circle at 20% 30%, #2c3e50 0%, transparent 40%),
+                  radial-gradient(circle at 70% 40%, #34495e 0%, transparent 40%),
+                  radial-gradient(circle at 40% 80%, #5d5244 0%, transparent 40%),
+                  radial-gradient(circle at 60% 60%, #6b3e3e 0%, transparent 40%),
+                  radial-gradient(circle at 50% 50%, #222 0%, transparent 40%);
+      background-size: 200% 200%;
+      animation: backgroundFlow 25s ease-in-out infinite alternate;
+      overflow: hidden;
+    }
+
+    @keyframes backgroundFlow {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+
+    .wave-container {
+      position: absolute;
+      bottom: 0;
+      width: 200%;
+      height: 100px;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    .wave-container svg {
+      display: block;
+      width: 200%;
+      height: 100px;
+      animation: waveMove 10s linear infinite;
+    }
+
+    @keyframes waveMove {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .content-section {
+      width: 100%;
+      height: 100vh;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wave-section">
+    <div class="wave-container">
+      <svg viewBox="0 0 2400 100" preserveAspectRatio="none">
+        <path d="
+          M0,40 
+          C300,80 600,0 900,50 
+          C1200,100 1500,20 1800,60 
+          C2100,100 2400,40 2700,70 
+          L2700,100 L0,100 Z" 
+          fill="#fff">
+        </path>
+      </svg>
+    </div>
+  </div>
+  <div class="content-section"></div>
+</body>
+</html>
