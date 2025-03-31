@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Fondo Complejo + Onda Animada</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow-x: hidden; }
+
+    .wave-section {
+      position: relative;
+      width: 100%;
+      height: 50vh;
+      background: radial-gradient(circle at 20% 20%, #ff0099, transparent),
+                  radial-gradient(circle at 80% 30%, #00ffff, transparent),
+                  radial-gradient(circle at 50% 80%, #ffff00, transparent),
+                  radial-gradient(circle at 30% 70%, #00ff00, transparent),
+                  radial-gradient(circle at 70% 60%, #ff6600, transparent),
+                  #111;
+      background-size: 200% 200%;
+      animation: complexBg 20s ease infinite;
+      overflow: hidden;
+    }
+
+    @keyframes complexBg {
+      0% {
+        background-position: 0% 0%;
+      }
+      50% {
+        background-position: 100% 100%;
+      }
+      100% {
+        background-position: 0% 0%;
+      }
+    }
+
+    .wave-container {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    .wave-container svg {
+      position: relative;
+      display: block;
+      width: 200%;
+      height: 100px;
+      animation: waveMove 6s linear infinite;
+    }
+
+    @keyframes waveMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .content-section {
+      width: 100%;
+      height: 100vh;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wave-section">
+    <div class="wave-container">
+      <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
+        <path d="M0,30 C150,80 350,0 600,50 C850,100 1050,20 1200,60 L1200,100 L0,100 Z" fill="#fff"></path>
+      </svg>
+    </div>
+  </div>
+  <div class="content-section"></div>
+</body>
+</html>
