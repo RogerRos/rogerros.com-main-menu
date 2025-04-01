@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>PCB Ajustado a Onda</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      background: #111;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .wave-section {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      background: radial-gradient(circle at 20% 30%, #2c3e50 0%, transparent 40%),
+                  radial-gradient(circle at 70% 40%, #34495e 0%, transparent 40%),
+                  radial-gradient(circle at 40% 80%, #5d5244 0%, transparent 40%),
+                  radial-gradient(circle at 60% 60%, #6b3e3e 0%, transparent 40%),
+                  radial-gradient(circle at 50% 50%, #222 0%, transparent 40%);
+      background-size: 200% 200%;
+      animation: backgroundFlow 25s ease-in-out infinite alternate;
+      overflow: hidden;
+    }
+
+    @keyframes backgroundFlow {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+
+    .pcb-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .pcb-module {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+      pointer-events: auto;
+    }
+
+    .pcb-module svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    path.base-line {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 2;
+    }
+
+    path.animated-line {
+      fill: none;
+      stroke: url(#rgbGradient);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    path.animated-line.active {
+      opacity: 1;
+      animation: dash 1.4s ease-out forwards;
+    }
+
+    @keyframes dash {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .pcb-node {
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #c9ffcb;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+      backdrop-filter: blur(6px);
+      transform: translate(-50%, -50%);
+    }
+
+    .pcb-node:hover {
+      box-shadow: none;
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .wave-container {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      overflow: hidden;
+      line-height: 0;
+      z-index: 1;
+    }
+
+    .wave-container svg {
+      display: block;
+      width: 100%;
+      height: 100px;
+    }
+
+    .content-section {
+      width: 100%;
+      height: 100vh;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wave-section">
+    <div class="pcb-wrapper">
+      <div class="pcb-module">
+        <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rgbGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%">
+                <animate attributeName="stop-color" values="#00ffcc; #33ff57; #00ffcc" dur="3s" repeatCount="indefinite" />
+              </stop>
+              <stop offset="100%">
+                <animate attributeName="stop-color" values="#33ff57; #00ffcc; #33ff57" dur="3s" repeatCount="indefinite" />
+              </stop>
+            </linearGradient>
+          </defs>
+
+          <!-- BASE PATHS - Subidas ~40px -->
+          <path class="base-line" d="M 200 260 L 450 260 Q 480 260 480 300 L 480 460" />
+          <path class="base-line" d="M 480 460 L 800 460 Q 840 460 840 420 L 840 260" />
+          <path class="base-line" d="M 480 460 L 480 610 Q 480 640 520 640 L 800 640" />
+          <path class="base-line" d="M 480 460 L 480 760 Q 480 800 450 800 L 200 800" />
+
+          <!-- ANIMATED PATHS - Subidas iguales -->
+          <path class="animated-line" id="anim-home-docs" d="M 200 260 L 450 260 Q 480 260 480 300 L 480 460" />
+          <path class="animated-line" id="anim-docs-home" d="M 480 460 L 480 300 Q 480 260 450 260 L 200 260" />
+          <path class="animated-line" id="anim-docs-tools" d="M 480 460 L 800 460 Q 840 460 840 420 L 840 260" />
+          <path class="animated-line" id="anim-tools-docs" d="M 840 260 L 840 420 Q 840 460 800 460 L 480 460" />
+          <path class="animated-line" id="anim-docs-about" d="M 480 460 L 480 610 Q 480 640 520 640 L 800 640" />
+          <path class="animated-line" id="anim-about-docs" d="M 800 640 L 520 640 Q 480 640 480 610 L 480 460" />
+          <path class="animated-line" id="anim-docs-hub" d="M 480 460 L 480 760 Q 480 800 450 800 L 200 800" />
+          <path class="animated-line" id="anim-hub-docs" d="M 200 800 L 450 800 Q 480 800 480 760 L 480 460" />
+        </svg>
+
+        <!-- NODOS (subidos ~4%) -->
+        <div class="pcb-node" id="node-home" style="left: 20%; top: 26%;">Home</div>
+        <div class="pcb-node" id="node-docs" style="left: 48%; top: 46%;">Docs</div>
+        <div class="pcb-node" id="node-tools" style="left: 84%; top: 26%;">Tools</div>
+        <div class="pcb-node" id="node-about" style="left: 80%; top: 64%;">About</div>
+        <div class="pcb-node" id="node-hub" style="left: 20%; top: 80%;">Hub</div>
+      </div>
+    </div>
+
+    <div class="wave-container">
+      <svg id="waveSVG" viewBox="0 0 1200 100" preserveAspectRatio="none">
+        <path id="wavePath" fill="#fff"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div class="content-section"></div>
+
+  <script>
+    // Onda animada
+    const path = document.getElementById('wavePath');
+    const viewBoxWidth = 1200;
+    const centerY = 50;
+    const amplitude = 11;
+    const frequency = 0.003;
+    const speed = 2;
+    let offset = 0;
+
+    function generateWave() {
+      let d = `M 0 ${centerY} `;
+      for (let x = 0; x <= viewBoxWidth; x++) {
+        const y = centerY + amplitude * Math.sin(frequency * (x + offset));
+        d += `L ${x} ${y} `;
+      }
+      d += `L ${viewBoxWidth} 100 L 0 100 Z`;
+      path.setAttribute('d', d);
+    }
+
+    function animate() {
+      offset += speed;
+      generateWave();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Interacción PCB
+    const connections = {
+      'node-home': ['anim-home-docs'],
+      'node-docs': ['anim-docs-home', 'anim-docs-tools', 'anim-docs-about', 'anim-docs-hub'],
+      'node-tools': ['anim-tools-docs'],
+      'node-about': ['anim-about-docs'],
+      'node-hub': ['anim-hub-docs'],
+    };
+
+    document.querySelectorAll('.pcb-node').forEach(node => {
+      node.addEventListener('mouseenter', () => {
+        const ids = connections[node.id] || [];
+        ids.forEach(id => {
+          const path = document.getElementById(id);
+          if (path) {
+            path.classList.remove('active');
+            void path.offsetWidth;
+            path.classList.add('active');
+          }
+        });
+      });
+
+      node.addEventListener('mouseleave', () => {
+        const ids = connections[node.id] || [];
+        ids.forEach(id => {
+          const path = document.getElementById(id);
+          path.classList.remove('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
